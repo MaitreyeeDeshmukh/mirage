@@ -15,6 +15,7 @@
 import { IOResult, type ByteSource } from '../../../io/types.ts'
 import { FileType, type FileStat, type PathSpec } from '../../../types.ts'
 import type { CommandFnResult, CommandOpts } from '../../config.ts'
+import { formatRecords } from '../output_helper.ts'
 import { detectFileType, formatFileResult } from '../file_helper.ts'
 
 const ENC = new TextEncoder()
@@ -47,6 +48,6 @@ export async function fileGeneric(
     const result = detectFileType(header, s)
     lines.push(formatFileResult(p.original, result, brief, mime))
   }
-  const out: ByteSource = ENC.encode(lines.join('\n'))
+  const out: ByteSource = formatRecords(lines)
   return [out, new IOResult()]
 }

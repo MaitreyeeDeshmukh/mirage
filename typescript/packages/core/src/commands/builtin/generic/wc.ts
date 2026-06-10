@@ -15,6 +15,7 @@
 import { IOResult, materialize, type ByteSource } from '../../../io/types.ts'
 import type { PathSpec } from '../../../types.ts'
 import type { CommandFnResult, CommandOpts } from '../../config.ts'
+import { formatRecords } from '../output_helper.ts'
 import { resolveSource } from '../utils/stream.ts'
 
 const ENC = new TextEncoder()
@@ -27,7 +28,7 @@ async function* wcLinesStream(source: AsyncIterable<Uint8Array>): AsyncIterable<
   for await (const chunk of source) {
     for (let i = 0; i < chunk.byteLength; i++) if (chunk[i] === 0x0a) count += 1
   }
-  yield ENC.encode(String(count))
+  yield ENC.encode(String(count) + '\n')
 }
 
 function countChar(text: string, ch: string): number {
@@ -92,7 +93,7 @@ export async function wcGeneric(
       else
         outputs.push(`${String(totalLines)}\t${String(totalWords)}\t${String(totalBytes)}\ttotal`)
     }
-    const out: ByteSource = ENC.encode(outputs.join('\n'))
+    const out: ByteSource = formatRecords(outputs)
     return [out, new IOResult()]
   }
   let source: AsyncIterable<Uint8Array>
@@ -111,10 +112,10 @@ export async function wcGeneric(
   const cc = text.length
   if (LFlag) {
     const maxLen = text.split(/\r?\n/).reduce((m, l) => Math.max(m, l.length), 0)
-    return [ENC.encode(String(maxLen)), new IOResult()]
+    return [ENC.encode(`${String(maxLen)}\n`), new IOResult()]
   }
-  if (wFlag) return [ENC.encode(String(wcVal)), new IOResult()]
-  if (mFlag) return [ENC.encode(String(cc)), new IOResult()]
-  if (cFlag) return [ENC.encode(String(bc)), new IOResult()]
-  return [ENC.encode(`${String(lc)}\t${String(wcVal)}\t${String(bc)}`), new IOResult()]
+  if (wFlag) return [ENC.encode(`${String(wcVal)}\n`), new IOResult()]
+  if (mFlag) return [ENC.encode(`${String(cc)}\n`), new IOResult()]
+  if (cFlag) return [ENC.encode(`${String(bc)}\n`), new IOResult()]
+  return [ENC.encode(`${String(lc)}\t${String(wcVal)}\t${String(bc)}\n`), new IOResult()]
 }

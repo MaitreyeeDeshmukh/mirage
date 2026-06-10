@@ -39,7 +39,8 @@ async function runLs(
   const [out] = result
   if (out === null) return ''
   const buf = out instanceof Uint8Array ? out : await materialize(out as AsyncIterable<Uint8Array>)
-  return DEC.decode(buf)
+  const text = DEC.decode(buf)
+  return text.endsWith('\n') ? text.slice(0, -1) : text
 }
 
 function seed(resource: RAMResource, dirs: string[], files: Record<string, string>): void {

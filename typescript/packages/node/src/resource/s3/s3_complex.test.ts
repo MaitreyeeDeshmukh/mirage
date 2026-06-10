@@ -127,14 +127,11 @@ describe('S3 complex scenarios (mocked)', () => {
     const io = await ws.execute(
       "echo '=== /s3/data/example.json ===' > /tmp/file_report.txt && " +
         'file /s3/data/example.json >> /tmp/file_report.txt && ' +
-        'echo >> /tmp/file_report.txt && ' +
         "echo '=== /s3/data/example.jsonl ===' >> /tmp/file_report.txt && " +
         'file /s3/data/example.jsonl >> /tmp/file_report.txt && ' +
-        'echo >> /tmp/file_report.txt && ' +
         "echo '=== /s3/reports/summary.txt ===' " +
         '>> /tmp/file_report.txt && ' +
         'file /s3/reports/summary.txt >> /tmp/file_report.txt && ' +
-        'echo >> /tmp/file_report.txt && ' +
         'cat /tmp/file_report.txt',
     )
     const lines = decode(io.stdout).trim().split('\n')
@@ -152,10 +149,8 @@ describe('S3 complex scenarios (mocked)', () => {
     const io = await ws.execute(
       "echo -n '/s3/data/example.json ' > /tmp/size_report.txt && " +
         'wc -c /s3/data/example.json >> /tmp/size_report.txt && ' +
-        'echo >> /tmp/size_report.txt && ' +
         "echo -n '/s3/data/example.jsonl ' >> /tmp/size_report.txt && " +
         'wc -c /s3/data/example.jsonl >> /tmp/size_report.txt && ' +
-        'echo >> /tmp/size_report.txt && ' +
         'cat /tmp/size_report.txt',
     )
     const lines = decode(io.stdout).trim().split('\n')

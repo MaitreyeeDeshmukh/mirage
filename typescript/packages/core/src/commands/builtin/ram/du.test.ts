@@ -44,7 +44,8 @@ async function runDu(
         ? out
         : await materialize(out as AsyncIterable<Uint8Array>)
   const text = DEC.decode(buf)
-  const lines = text === '' ? [] : text.split('\n')
+  const body = text.endsWith('\n') ? text.slice(0, -1) : text
+  const lines = body === '' ? [] : body.split('\n')
   return { lines, exitCode: ioResult.exitCode }
 }
 

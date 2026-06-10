@@ -43,7 +43,8 @@ async function runTree(
       : out instanceof Uint8Array
         ? out
         : await materialize(out as AsyncIterable<Uint8Array>)
-  const text = DEC.decode(buf)
+  const decoded = DEC.decode(buf)
+  const text = decoded.endsWith('\n') ? decoded.slice(0, -1) : decoded
   const lines = text === '' ? [] : text.split('\n')
   return { lines, exitCode: ioResult.exitCode }
 }

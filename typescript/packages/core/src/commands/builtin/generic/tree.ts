@@ -16,9 +16,8 @@ import { IOResult, type ByteSource } from '../../../io/types.ts'
 import { FileType, PathSpec, type FileStat } from '../../../types.ts'
 import { rstripSlash } from '../../../util/slash.ts'
 import type { CommandFnResult, CommandOpts } from '../../config.ts'
+import { formatRecords } from '../output_helper.ts'
 import { fnmatch } from '../../../util/fnmatch.ts'
-
-const ENC = new TextEncoder()
 
 interface TreeOpts {
   showHidden: boolean
@@ -112,6 +111,6 @@ export async function treeGeneric(
   for (const p of targets) {
     await walkTree(readdir, stat, p, '', lines, treeOpts, 0)
   }
-  const out: ByteSource = ENC.encode(lines.join('\n'))
+  const out: ByteSource = formatRecords(lines)
   return [out, new IOResult()]
 }
